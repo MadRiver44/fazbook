@@ -17,7 +17,6 @@ router.get('/new', function(req, res, next){
   res.render('users/new', {title: 'New Fazbook User'});
 })
 
-
 router.post('/', function(req, res, next) {
   models.User.create({
     firstName: req.body.firstName,
@@ -29,6 +28,35 @@ router.post('/', function(req, res, next) {
   });
 });
 
+
+router.get('/:id', function(req, res, next) {
+  models.User.findById(req.params.id).then(function(user) {
+    res.render('users/show', { user: user });
+  });
+});
+
+
+router.get('/:id/edit', function(req, res, next) {
+  models.User.findById(req.params.id).then(function(user) {
+    res.render('users/edit', { user: user, moment: moment });
+  });
+});
+
+
+router.put('/:id', function(req, res, next) {
+  models.User.update({
+    email: req.body.email,
+    firstName: req.body.firstName,
+    lastName: req.body.lastName,
+    dob: req.body.dob
+  }, { where: { id: req.params.id } }).then(function() {
+    res.redirect('/users/' + req.params.id);
+  });
+});
+
+
+
+
 router.delete('/:id', function(req, res, next) {
   models.User.destroy({
     where: { id: req.params.id }
@@ -36,5 +64,8 @@ router.delete('/:id', function(req, res, next) {
     res.redirect('/users');
   });
 });
+
+
+
 
 module.exports = router;
